@@ -26,6 +26,22 @@
 // This node implementation is derived from ROBOTIS CO., LTD. example code "read_write_node"
 // Example Code Author: Will Son
 
+// USAGE :: 
+/****************
+ * 
+ * This node subscribes to a topic ('set_position' by default) and awaits publication
+ * of an id:pos (msg::GetPosition) publication. It will then construct a packet in the
+ * format that the Dynamixel ecosystem accepts, and send it along the USB port - where
+ * an embedded unit (U2D2) will command the servos to follow.
+ * 
+ * This node will disable torque mode on all servos on termination.
+ * 
+ * This node currently operates on a "first come first serve" basis, where the first
+ * servos addressed will be the first to move.
+ * 
+*****************/
+
+
 #include <memory>
 #include <string>
 
@@ -116,10 +132,77 @@ SyncReadWrite::~SyncReadWrite()
 {
 }
 
+void setupDynamixel(uint8_t dxl_id)
+{
+  // Use Position Control Mode
+  dxl_comm_result = packetHandler->write1ByteTxRx(
+    portHandler,
+    dxl_id,
+    ADDR_OPERATING_MODE,
+    3,
+    &dxl_error
+  );
+
+  if (dxl_comm_result != COMM_SUCCESS) {
+    RCLCPP_ERROR(rclcpp::get_logger("read_write_node"), "Failed to set Position Control Mode.");
+  } else {
+    RCLCPP_INFO(rclcpp::get_logger("read_write_node"), "Succeeded to set Position Control Mode.");
+  }
+
+  // Enable Torque of DYNAMIXEL
+  dxl_comm_result = packetHandler->write1ByteTxRx(
+    portHandler,
+    dxl_id,
+    ADDR_TORQUE_ENABLE,
+    1,
+    &dxl_error
+  );
+
+  if (dxl_comm_result != COMM_SUCCESS) {
+    RCLCPP_ERROR(rclcpp::get_logger("read_write_node"), "Failed to enable torque.");
+  } else {
+    RCLCPP_INFO(rclcpp::get_logger("read_write_node"), "Succeeded to enable torque.");
+  }
+}
+
 int main(int argc, char ** argv)
 {
-  (void) argc;
-  (void) argv;
+  portHandler = dynamixel::PortHandler::getPortHandler(DEVICE_NAME);
+  packetHandler = dynamixel::PacketHandler::getPacketHandler(PROTOCOL_VERSION);
 
+  // Open Serial Port
+  dxl_comm_result = portHandler->openPort();
+  if (dxl_comm_result == false) {
+    RCLCPP_ERROR(rclcpp::get_logger("read_write_node"), "Failed to open the port!");
+    return -1;
+  } else {
+    RCLCPP_INFO(rclcpp::get_logger("read_write_node"), "Succeeded to open the port.");
+  }
+
+  // Set the baudrate of the serial port (use DYNAMIXEL Baudrate)
+  dxl_comm_result = portHandler->setBaudRate(BAUDRATE);
+  if (dxl_comm_result == false) {
+    RCLCPP_ERROR(rclcpp::get_logger("read_write_node"), "Failed to set the baudrate!");
+    return -1;
+  } else {
+    RCLCPP_INFO(rclcpp::get_logger("read_write_node"), "Succeeded to set the baudrate.");
+  }
+
+  setupDynamixel(BROADCAST_ID);
+
+  rclcpp::init(argc, argv);
+
+  auto readwritenode = std::make_shared<SyncReadWrite>();
+  rclcpp::spin(readwritenode);
+  rclcpp::shutdown();
+
+  // Disable Torque of DYNAMIXEL
+  packetHandler->write1ByteTxRx(
+    portHandler,
+    BROADCAST_ID,
+    ADDR_TORQUE_ENABLE,
+    0,
+    &dxl_error
+  );
   return 0;
 }

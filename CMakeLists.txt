@@ -30,8 +30,16 @@ ament_target_dependencies(dynamixel_sync_read_write
     rclcpp
 )
 
+add_executable(dynamixel_srw_tester src/dynamixel_srw_tester.cpp)
+ament_target_dependencies(dynamixel_srw_tester
+    dynamixel_sdk_custom_interfaces
+    dynamixel_sdk
+    rclcpp
+)
+
 install(TARGETS 
   dynamixel_sync_read_write
+  dynamixel_srw_tester
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
