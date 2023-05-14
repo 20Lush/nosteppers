@@ -12,7 +12,7 @@
 
 using namespace std::chrono_literals;
 
-#define CALLBACK_INTERVAL 500ms
+#define CALLBACK_INTERVAL 100ms
 
 SyncReadWriteTester::SyncReadWriteTester(int *theta_iter) : Node("srw_tester") {
 
@@ -43,9 +43,9 @@ SyncReadWriteTester::SyncReadWriteTester(int *theta_iter) : Node("srw_tester") {
         message.id = id_param;
         message.position = desired_position;
         set_position_publisher_->publish(message);
-        RCLCPP_INFO(this->get_logger(), "Publishing to ID_'%d': %d", message.id, message.position);
+        RCLCPP_INFO(this->get_logger(), "Publishing to ID_'%d' with theta '%d': %d", message.id, *theta_iter, message.position);
 
-        *theta_iter += 0.5;
+        *theta_iter += 1;
 
     });
 }
@@ -59,18 +59,16 @@ int main(int argc, char ** argv){
     rclcpp::init(argc, argv);
 
     int theta = 0;
-    int width = 100;
-    int shift = 10;
+    int amplitude = 750;
+    int shift = 750;
 
     auto tester = std::make_shared<SyncReadWriteTester>(&theta);
 
     while(rclcpp::ok()){
 
-        tester->desired_position = (sin(theta) + shift) * width * 0.5;
+        tester->desired_position = amplitude * sin(theta) + shift;
 
         rclcpp::spin_some(tester);
-
-        theta += 1;
 
     }
 
