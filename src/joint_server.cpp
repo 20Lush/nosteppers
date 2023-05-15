@@ -46,7 +46,7 @@
 #define DYNAMIXEL_MIN 0
 #define DYNAMIXEL_MAX 4069
 
-int map(int x, float in_min, float in_max, int out_min, int out_max) {
+int map(float x, float in_min, float in_max, int out_min, int out_max) {
   return round((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min); //round(). Yikes.
 }
 
@@ -65,8 +65,8 @@ JointServer::JointServer() : Node ("joint_server") {
     set_position_publisher_ = this->create_publisher<SetPosition>(topic_param, QOS_RKL10V);
 
     // UGLY HACK START //////////////////////////////////////////////////////////////////////////////
-    j0_sub_ = this->create_subscription<std_msgs::msg::Int32>("j0", QOS_RKL10V,
-        [this](const std_msgs::msg::Int32::SharedPtr msg) -> void {
+    j0_sub_ = this->create_subscription<mFloat32>("j0", QOS_RKL10V,
+        [this](const mFloat32::SharedPtr msg) -> void {
             RCLCPP_INFO(this->get_logger(), "Heard from j0: %d", msg->data);
 
             auto filtered_joint_data = SetPosition();
@@ -76,8 +76,8 @@ JointServer::JointServer() : Node ("joint_server") {
             set_position_publisher_->publish(filtered_joint_data);
         });
 
-    j1_sub_ = this->create_subscription<mInt32>("j1", QOS_RKL10V,
-        [this](const mInt32::SharedPtr msg) -> void {
+    j1_sub_ = this->create_subscription<mFloat32>("j1", QOS_RKL10V,
+        [this](const mFloat32::SharedPtr msg) -> void {
             RCLCPP_INFO(this->get_logger(), "Heard from j1: %d", msg->data);
 
             auto filtered_joint_data = SetPosition();
@@ -87,8 +87,8 @@ JointServer::JointServer() : Node ("joint_server") {
             set_position_publisher_->publish(filtered_joint_data);
         });
 
-    j2_sub_ = this->create_subscription<mInt32>("j2", QOS_RKL10V,
-        [this](const mInt32::SharedPtr msg) -> void {
+    j2_sub_ = this->create_subscription<mFloat32>("j2", QOS_RKL10V,
+        [this](const mFloat32::SharedPtr msg) -> void {
             RCLCPP_INFO(this->get_logger(), "Heard from j2: %d", msg->data);
 
             auto filtered_joint_data = SetPosition();
@@ -98,8 +98,8 @@ JointServer::JointServer() : Node ("joint_server") {
             set_position_publisher_->publish(filtered_joint_data);
         });
     
-    j3_sub_ = this->create_subscription<mInt32>("j3", QOS_RKL10V,
-        [this](const mInt32::SharedPtr msg) -> void {
+    j3_sub_ = this->create_subscription<mFloat32>("j3", QOS_RKL10V,
+        [this](const mFloat32::SharedPtr msg) -> void {
             RCLCPP_INFO(this->get_logger(), "Heard from j3: %d", msg->data);
 
             auto filtered_joint_data = SetPosition();
@@ -109,8 +109,8 @@ JointServer::JointServer() : Node ("joint_server") {
             set_position_publisher_->publish(filtered_joint_data);
         });
 
-    j4_sub_ = this->create_subscription<mInt32>("j4", QOS_RKL10V,
-        [this](const mInt32::SharedPtr msg) -> void {
+    j4_sub_ = this->create_subscription<mFloat32>("j4", QOS_RKL10V,
+        [this](const mFloat32::SharedPtr msg) -> void {
             RCLCPP_INFO(this->get_logger(), "Heard from j4: %d", msg->data);
 
             auto filtered_joint_data = SetPosition();
@@ -121,7 +121,6 @@ JointServer::JointServer() : Node ("joint_server") {
         });
     // UGLY HACK END //////////////////////////////////////////////////////////////////////////////
     // that hurt
-
 }
 
 JointServer::~JointServer() {}
