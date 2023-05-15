@@ -70,7 +70,6 @@ int main(int argc, char ** argv){
 
         rclcpp::spin_some(tester);
 
-        theta += 1;
 
     }
 

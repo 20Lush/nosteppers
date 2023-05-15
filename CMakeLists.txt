@@ -20,6 +20,7 @@ find_package(ament_cmake REQUIRED)
 find_package(dynamixel_sdk REQUIRED)
 find_package(dynamixel_sdk_custom_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
 
 include_directories(include/nosteppers/)
 
@@ -37,9 +38,18 @@ ament_target_dependencies(dynamixel_srw_tester
     rclcpp
 )
 
+add_executable(joint_server src/joint_server.cpp)
+ament_target_dependencies(joint_server
+    dynamixel_sdk_custom_interfaces
+    dynamixel_sdk
+    std_msgs
+    rclcpp
+)
+
 install(TARGETS 
   dynamixel_sync_read_write
   dynamixel_srw_tester
+  joint_server
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
