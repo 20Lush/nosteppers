@@ -41,7 +41,12 @@ ament_target_dependencies(dynamixel_srw_tester
 add_executable(joint_server src/joint_server.cpp)
 ament_target_dependencies(joint_server
     dynamixel_sdk_custom_interfaces
-    dynamixel_sdk
+    std_msgs
+    rclcpp
+)
+
+add_executable(joint_planned_path src/joint_planned_path.cpp)
+ament_target_dependencies(joint_planned_path
     std_msgs
     rclcpp
 )
@@ -50,6 +55,7 @@ install(TARGETS
   dynamixel_sync_read_write
   dynamixel_srw_tester
   joint_server
+  joint_planned_path
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

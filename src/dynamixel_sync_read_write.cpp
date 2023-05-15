@@ -128,9 +128,7 @@ SyncReadWrite::SyncReadWrite()
   );
 }
 
-SyncReadWrite::~SyncReadWrite()
-{
-}
+SyncReadWrite::~SyncReadWrite() {}
 
 void setupDynamixel(uint8_t dxl_id)
 {

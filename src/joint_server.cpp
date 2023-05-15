@@ -67,7 +67,7 @@ JointServer::JointServer() : Node ("joint_server") {
     // UGLY HACK START //////////////////////////////////////////////////////////////////////////////
     j0_sub_ = this->create_subscription<mFloat32>("j0", QOS_RKL10V,
         [this](const mFloat32::SharedPtr msg) -> void {
-            RCLCPP_INFO(this->get_logger(), "Heard from j0: %d", msg->data);
+            RCLCPP_INFO(this->get_logger(), "Heard from j0: %f", msg->data);
 
             auto filtered_joint_data = SetPosition();
             filtered_joint_data.id = JOINT_0;
@@ -78,7 +78,7 @@ JointServer::JointServer() : Node ("joint_server") {
 
     j1_sub_ = this->create_subscription<mFloat32>("j1", QOS_RKL10V,
         [this](const mFloat32::SharedPtr msg) -> void {
-            RCLCPP_INFO(this->get_logger(), "Heard from j1: %d", msg->data);
+            RCLCPP_INFO(this->get_logger(), "Heard from j1: %f", msg->data);
 
             auto filtered_joint_data = SetPosition();
             filtered_joint_data.id = JOINT_1;
@@ -89,7 +89,7 @@ JointServer::JointServer() : Node ("joint_server") {
 
     j2_sub_ = this->create_subscription<mFloat32>("j2", QOS_RKL10V,
         [this](const mFloat32::SharedPtr msg) -> void {
-            RCLCPP_INFO(this->get_logger(), "Heard from j2: %d", msg->data);
+            RCLCPP_INFO(this->get_logger(), "Heard from j2: %f", msg->data);
 
             auto filtered_joint_data = SetPosition();
             filtered_joint_data.id = JOINT_2;
@@ -100,7 +100,7 @@ JointServer::JointServer() : Node ("joint_server") {
     
     j3_sub_ = this->create_subscription<mFloat32>("j3", QOS_RKL10V,
         [this](const mFloat32::SharedPtr msg) -> void {
-            RCLCPP_INFO(this->get_logger(), "Heard from j3: %d", msg->data);
+            RCLCPP_INFO(this->get_logger(), "Heard from j3: %f", msg->data);
 
             auto filtered_joint_data = SetPosition();
             filtered_joint_data.id = JOINT_3;
@@ -111,7 +111,7 @@ JointServer::JointServer() : Node ("joint_server") {
 
     j4_sub_ = this->create_subscription<mFloat32>("j4", QOS_RKL10V,
         [this](const mFloat32::SharedPtr msg) -> void {
-            RCLCPP_INFO(this->get_logger(), "Heard from j4: %d", msg->data);
+            RCLCPP_INFO(this->get_logger(), "Heard from j4: %f", msg->data);
 
             auto filtered_joint_data = SetPosition();
             filtered_joint_data.id = JOINT_4;
