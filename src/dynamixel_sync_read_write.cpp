@@ -39,6 +39,8 @@
  * This node currently operates on a "first come first serve" basis, where the first
  * servos addressed will be the first to move.
  * 
+ * TLDR: this program sends packets to the hardware
+ * 
 *****************/
 
 
