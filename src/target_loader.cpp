@@ -7,21 +7,29 @@ using namespace std::chrono_literals;
 
 #define LOG_INTERVAL 1000ms
 
-TargetLoader::TargetLoader(std::vector<Operation> ops_param) : Node ("target_loader") {
+// the more i look at this the worse it seems
+#define CLOSE false
+#define OPEN true
+
+TargetLoader::TargetLoader() : Node ("target_loader") {
 
     int8_t qos_depth = 10;
     const auto QOS_RKL10V = rclcpp::QoS(rclcpp::KeepLast(qos_depth)).reliable().durability_volatile();
 
-    loadOperations(ops_param);
+    loadOperations();
+
+    publishEE(OPEN);
 
     x_publisher_ = this->create_publisher<mFloat32>("tgt_x", QOS_RKL10V);
     y_publisher_ = this->create_publisher<mFloat32>("tgt_y", QOS_RKL10V);
     z_publisher_ = this->create_publisher<mFloat32>("tgt_z", QOS_RKL10V);
     theta_publisher_ = this->create_publisher<mFloat32>("tgt_theta", QOS_RKL10V);
 
+    ee_publisher_ = this->create_publisher<std_msgs::msg::Bool>("ee", QOS_RKL10V);
+
     timer_ = this->create_wall_timer(LOG_INTERVAL, [this]() -> void {
 
-        RCLCPP_INFO(this->get_logger(), "Serving Operation [%d]", currOperation_idx);
+        //RCLCPP_INFO(this->get_logger(), "Serving Operation [%d]", currOperation_idx);
 
     });
 
@@ -46,17 +54,27 @@ void TargetLoader::publishTarget(Target tgt) {
 
 }
 
-void TargetLoader::loadOperations(std::vector<Operation> ops) {
+void TargetLoader::publishEE(bool state) {
+
+    auto msg = std_msgs::msg::Bool();
+    msg.data = state;
+
+    ee_publisher_->publish(msg);
+
+}
+
+void TargetLoader::loadOperations() {
     //correlate picks to places
+    RCLCPP_INFO(this->get_logger(), "loading op %d", pick_tgts.size());
     for(uint8_t i=0; i < pick_tgts.size(); i++){
 
-        ops.at(i).pick = pick_tgts.at(i);
-        ops.at(i).place = place_tgts.at(i);
+        operations.push_back({pick_tgts.at(i), place_tgts.at(i)});
 
     }
 
 }
-
+ 
+#define BLOCK_HEIGHT 0.05
 void TargetLoader::execute(std::vector<Operation> ops, int ops_idx, bool return_to_neutral = false){
 
     //path logic
@@ -65,48 +83,75 @@ void TargetLoader::execute(std::vector<Operation> ops, int ops_idx, bool return_
     //it will block any parallel logic in this executable though to watch urself
 
     //path to pick
+    publishTarget(ops.at(ops_idx).pick);
+    RCLCPP_INFO(this->get_logger(), "pick");
 
     //sleep for MAJOR physical response (could eventually be replaced with feedback from physical nodes)
+    rclcpp::sleep_for(PATH_MAJOR_DELAY);
 
     //lower to manipulation height
+    publishTarget({ ops.at(ops_idx).pick.x, ops.at(ops_idx).pick.y, BLOCK_HEIGHT, ops.at(ops_idx).pick.theta});
 
     //sleep for MINOR physical response
+    rclcpp::sleep_for(PATH_MINOR_DELAY);
 
     //close end effector
+    publishEE(CLOSE);
+    RCLCPP_INFO(this->get_logger(), "EE CLOSE");
 
     //sleep for END_EFFECTOR physical response
+    rclcpp::sleep_for(END_EFFECTOR_DELAY);
 
     //raise to traverse height
+    publishTarget(ops.at(ops_idx).pick);
 
-    //sleep for MAJOR physical respone
+    //sleep for MINOR physical respones
+    rclcpp::sleep_for(PATH_MINOR_DELAY);
+
+    //path to place
+    publishTarget(ops.at(ops_idx).place);
+    RCLCPP_INFO(this->get_logger(), "place");
+
+    //sleep for MAJOR physical response
+    rclcpp::sleep_for(PATH_MAJOR_DELAY);
 
     //lower to manipulation height
+    publishTarget({ ops.at(ops_idx).place.x, ops.at(ops_idx).place.y, BLOCK_HEIGHT, ops.at(ops_idx).place.theta});
 
     //sleep for MINOR physical response
+    rclcpp::sleep_for(PATH_MINOR_DELAY);
 
     //open end effector
+    publishEE(OPEN);
+    RCLCPP_INFO(this->get_logger(), "EE OPEN");
 
     //raise to traverse height
+    publishTarget(ops.at(ops_idx).place);
 
     //sleep for MINOR physical response
+    rclcpp::sleep_for(PATH_MINOR_DELAY);
 
     //if return_to_neutral == true, goto neutral target
     // ---- sleep for MAJOR physical response
+    if(return_to_neutral){
+        publishTarget({-0.1, 0.0, 0.7, 90});
+        rclcpp::sleep_for(PATH_MAJOR_DELAY);
+    }
 
     currOperation_idx++;
-
 }
 
 int main(int argc, char ** argv){
     rclcpp::init(argc, argv);
 
-    std::vector<Operation> operations;
-    auto tgt_node = std::make_shared<TargetLoader>(operations);
 
-    for(uint8_t i=0; i <= operations.size(); i++){
+    auto tgt_node = std::make_shared<TargetLoader>();
 
-        tgt_node->execute(operations, i);
+    for(uint8_t i=0; i <= tgt_node->operations.size(); i++){
+
         rclcpp::spin_some(tgt_node); //pretty much just for logging
+        tgt_node->execute(tgt_node->operations, i, true);
+        
 
     }
 

@@ -21,6 +21,7 @@ find_package(dynamixel_sdk REQUIRED)
 find_package(dynamixel_sdk_custom_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(JetsonGPIO REQUIRED)
 
 include_directories(include/nosteppers/)
 
@@ -43,6 +44,7 @@ ament_target_dependencies(joint_server
     dynamixel_sdk_custom_interfaces
     std_msgs
     rclcpp
+    JetsonGPIO
 )
 
 add_executable(joint_planned_path src/joint_planned_path.cpp)

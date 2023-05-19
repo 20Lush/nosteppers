@@ -42,8 +42,21 @@
 
 #define MAP_RATIO 0.087890625
 
+//maps degrees to dynamixel position values
 int map(float x) {
-  return round(x/0.087890625); //expensive
+  return round(x / MAP_RATIO); //im like 80% sure there is bad behavior radiating from here
+}
+
+void JointServer::openEE() {
+
+    GPIO::output(solenoid_pin_, GPIO::HIGH);
+
+}
+
+void JointServer::closeEE() {
+
+    GPIO::output(solenoid_pin_, GPIO::LOW);
+
 }
 
 JointServer::JointServer() : Node ("joint_server") {
@@ -112,6 +125,19 @@ JointServer::JointServer() : Node ("joint_server") {
         });
     // UGLY HACK END //////////////////////////////////////////////////////////////////////////////
     // that hurt
+
+    GPIO::setmode(GPIO::BOARD);
+    GPIO::setup(solenoid_pin_, GPIO::OUT, GPIO::LOW);
+
+    ee_sub_ = this->create_subscription<std_msgs::msg::Bool>("ee", QOS_RKL10V,
+        [this](const std_msgs::msg::Bool::SharedPtr msg) -> void {
+
+            RCLCPP_INFO(this->get_logger(), "Heard from EE: %d", msg->data);
+
+            if(msg->data) openEE();
+            else closeEE();
+
+        });
 }
 
 JointServer::~JointServer() {}

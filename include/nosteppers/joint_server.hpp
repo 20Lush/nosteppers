@@ -6,6 +6,9 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rcutils/cmdline_parser.h"
 #include "std_msgs/msg/float32.hpp"
+#include "std_msgs/msg/bool.hpp"
+
+#include <JetsonGPIO.h>
 
 //joint data from coppelia is float, need to map it to integer with minimal accuracy loss.
 //integer truncation is really bad in almost every case.
@@ -20,6 +23,9 @@ class JointServer : public rclcpp::Node {
         JointServer();
         virtual ~JointServer();
 
+        void openEE();
+        void closeEE();
+
     private:
 
         rclcpp::Publisher<SetPosition>::SharedPtr set_position_publisher_;
@@ -31,5 +37,9 @@ class JointServer : public rclcpp::Node {
         rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr j2_sub_;
         rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr j3_sub_;
         rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr j4_sub_;
+
+        rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr ee_sub_;
+
+        const int solenoid_pin_ = 38;
 
 };
