@@ -40,16 +40,10 @@
 #define JOINT_3 3
 #define JOINT_4 4
 
-#define COPPELIA_JOINT_MIN 0.0f
-#define COPPELIA_JOINT_MAX 360.0f
+#define MAP_RATIO 0.087890625
 
-#define DYNAMIXEL_MIN 0
-#define DYNAMIXEL_MAX 4069
-
-#define PRECISION_OFFSET -20
-
-int map(float x, float in_min, float in_max, int out_min, int out_max) {
-  return x; //(x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min; 
+int map(float x) {
+  return round(x/0.087890625); //expensive
 }
 
 JointServer::JointServer() : Node ("joint_server") {
@@ -73,8 +67,7 @@ JointServer::JointServer() : Node ("joint_server") {
 
             auto filtered_joint_data = SetPosition();
             filtered_joint_data.id = JOINT_0;
-            filtered_joint_data.position = map(msg->data, COPPELIA_JOINT_MIN, COPPELIA_JOINT_MAX, 
-                                                            DYNAMIXEL_MIN, DYNAMIXEL_MAX);
+            filtered_joint_data.position = map(msg->data);
             set_position_publisher_->publish(filtered_joint_data);
         });
 
@@ -84,8 +77,7 @@ JointServer::JointServer() : Node ("joint_server") {
 
             auto filtered_joint_data = SetPosition();
             filtered_joint_data.id = JOINT_1;
-            filtered_joint_data.position = map(msg->data, COPPELIA_JOINT_MIN, COPPELIA_JOINT_MAX, 
-                                                            DYNAMIXEL_MIN, DYNAMIXEL_MAX);
+            filtered_joint_data.position = map(msg->data);
             set_position_publisher_->publish(filtered_joint_data);
         });
 
@@ -95,8 +87,7 @@ JointServer::JointServer() : Node ("joint_server") {
 
             auto filtered_joint_data = SetPosition();
             filtered_joint_data.id = JOINT_2;
-            filtered_joint_data.position = map(msg->data, COPPELIA_JOINT_MIN, COPPELIA_JOINT_MAX, 
-                                                            DYNAMIXEL_MIN, DYNAMIXEL_MAX);
+            filtered_joint_data.position = map(msg->data);
             set_position_publisher_->publish(filtered_joint_data);
         });
     
@@ -106,8 +97,7 @@ JointServer::JointServer() : Node ("joint_server") {
 
             auto filtered_joint_data = SetPosition();
             filtered_joint_data.id = JOINT_3;
-            filtered_joint_data.position = map(msg->data, COPPELIA_JOINT_MIN, COPPELIA_JOINT_MAX, 
-                                                            DYNAMIXEL_MIN, DYNAMIXEL_MAX);
+            filtered_joint_data.position = map(msg->data);
             set_position_publisher_->publish(filtered_joint_data);
         });
 
@@ -117,8 +107,7 @@ JointServer::JointServer() : Node ("joint_server") {
 
             auto filtered_joint_data = SetPosition();
             filtered_joint_data.id = JOINT_4;
-            filtered_joint_data.position = map(msg->data, COPPELIA_JOINT_MIN, COPPELIA_JOINT_MAX, 
-                                                            DYNAMIXEL_MIN, DYNAMIXEL_MAX);
+            filtered_joint_data.position = map(msg->data);
             set_position_publisher_->publish(filtered_joint_data);
         });
     // UGLY HACK END //////////////////////////////////////////////////////////////////////////////
