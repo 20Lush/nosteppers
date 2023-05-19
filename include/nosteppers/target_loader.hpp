@@ -7,7 +7,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rcutils/cmdline_parser.h"
 #include "std_msgs/msg/float32.hpp"
-#include "std_msgs/msg/bool.hpp"
+#include "std_msgs/msg/int32.hpp"
 
 struct Target {
 
@@ -42,13 +42,13 @@ class TargetLoader : public rclcpp::Node {
         rclcpp::Publisher<mFloat32>::SharedPtr z_publisher_;
         rclcpp::Publisher<mFloat32>::SharedPtr theta_publisher_;
 
-        rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr ee_publisher_;
+        rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr ee_publisher_;
 
         rclcpp::TimerBase::SharedPtr timer_;
 
         void loadOperations(); // call in construct
         void publishTarget(Target tgt);
-        void publishEE(bool state);
+        void publishEE(int state);
 
         int currOperation_idx;
 

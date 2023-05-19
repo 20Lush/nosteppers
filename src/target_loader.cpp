@@ -8,8 +8,8 @@ using namespace std::chrono_literals;
 #define LOG_INTERVAL 1000ms
 
 // the more i look at this the worse it seems
-#define CLOSE false
-#define OPEN true
+#define CLOSE 0
+#define OPEN 1
 
 TargetLoader::TargetLoader() : Node ("target_loader") {
 
@@ -18,14 +18,14 @@ TargetLoader::TargetLoader() : Node ("target_loader") {
 
     loadOperations();
 
-    publishEE(OPEN);
-
     x_publisher_ = this->create_publisher<mFloat32>("tgt_x", QOS_RKL10V);
     y_publisher_ = this->create_publisher<mFloat32>("tgt_y", QOS_RKL10V);
     z_publisher_ = this->create_publisher<mFloat32>("tgt_z", QOS_RKL10V);
     theta_publisher_ = this->create_publisher<mFloat32>("tgt_theta", QOS_RKL10V);
 
-    ee_publisher_ = this->create_publisher<std_msgs::msg::Bool>("ee", QOS_RKL10V);
+    ee_publisher_ = this->create_publisher<std_msgs::msg::Int32>("ee", QOS_RKL10V);
+
+    publishEE(OPEN);
 
     timer_ = this->create_wall_timer(LOG_INTERVAL, [this]() -> void {
 
@@ -54,12 +54,15 @@ void TargetLoader::publishTarget(Target tgt) {
 
 }
 
-void TargetLoader::publishEE(bool state) {
+void TargetLoader::publishEE(int state) {
 
-    auto msg = std_msgs::msg::Bool();
+    
+
+    auto msg = std_msgs::msg::Int32();
     msg.data = state;
-
     ee_publisher_->publish(msg);
+    RCLCPP_INFO(this->get_logger(), "published on EE");
+    
 
 }
 
@@ -71,6 +74,7 @@ void TargetLoader::loadOperations() {
         operations.push_back({pick_tgts.at(i), place_tgts.at(i)});
 
     }
+    RCLCPP_INFO(this->get_logger(), "ops loaded: %d", operations.size());
 
 }
  
@@ -149,9 +153,10 @@ int main(int argc, char ** argv){
 
     for(uint8_t i=0; i <= tgt_node->operations.size(); i++){
 
-        rclcpp::spin_some(tgt_node); //pretty much just for logging
+        RCLCPP_INFO(tgt_node->get_logger(), "loaded command");
+         //pretty much just for logging
         tgt_node->execute(tgt_node->operations, i, true);
-        
+        rclcpp::spin_some(tgt_node);
 
     }
 

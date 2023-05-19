@@ -60,6 +60,20 @@
 #define ADDR_TORQUE_ENABLE 64
 #define ADDR_GOAL_POSITION 116
 #define ADDR_PRESENT_POSITION 132
+#define ADDR_PROFILE_ACCELERATION 112
+#define ADDR_PROFILE_VELOCITY 30
+
+#define BASE_ACC 50
+#define BASE_VEL 750
+
+#define XM540_ACC 2
+#define XM540_VEL 30
+
+#define WRIST_ACC 10
+#define WRIST_VEL 30
+
+#define SPLAY_ACC 60
+#define SPLAY_VEL 10
 
 // Protocol version
 #define PROTOCOL_VERSION 2.0  // Default Protocol version of DYNAMIXEL X series.
@@ -162,6 +176,67 @@ void setupDynamixel(uint8_t dxl_id)
     RCLCPP_ERROR(rclcpp::get_logger("read_write_node"), "Failed to enable torque.");
   } else {
     RCLCPP_INFO(rclcpp::get_logger("read_write_node"), "Succeeded to enable torque.");
+  }
+
+  if(dxl_id == 0){
+    // Set Acceleration Profile
+    dxl_comm_result = packetHandler->write1ByteTxRx(
+      portHandler,
+      dxl_id,
+      ADDR_PROFILE_ACCELERATION,
+      (uint8_t)50,
+      &dxl_error
+    );
+    if (dxl_comm_result != COMM_SUCCESS) {
+      RCLCPP_ERROR(rclcpp::get_logger("read_write_node"), "Failed to set acceleration profile.");
+    } else {
+      RCLCPP_INFO(rclcpp::get_logger("read_write_node"), "Succeeded to set acceleration profile.");
+    }
+
+    // Set Veloctiy Profile
+    dxl_comm_result = packetHandler->write1ByteTxRx(
+      portHandler,
+      dxl_id,
+      ADDR_PROFILE_VELOCITY,
+      (uint8_t)750,
+      &dxl_error
+    );
+    if (dxl_comm_result != COMM_SUCCESS) {
+      RCLCPP_ERROR(rclcpp::get_logger("read_write_node"), "Failed to set velocity profile.");
+    } else {
+      RCLCPP_INFO(rclcpp::get_logger("read_write_node"), "Succeeded to set velocity profile.");
+    }
+
+  }
+
+  else{
+    dxl_comm_result = packetHandler->write1ByteTxRx(
+      portHandler,
+      dxl_id,
+      ADDR_PROFILE_ACCELERATION,
+      (uint8_t)10,
+      &dxl_error
+    );
+    if (dxl_comm_result != COMM_SUCCESS) {
+      RCLCPP_ERROR(rclcpp::get_logger("read_write_node"), "Failed to set acceleration profile.");
+    } else {
+      RCLCPP_INFO(rclcpp::get_logger("read_write_node"), "Succeeded to set acceleration profile.");
+    }
+
+    // Set Veloctiy Profile
+    dxl_comm_result = packetHandler->write1ByteTxRx(
+      portHandler,
+      dxl_id,
+      ADDR_PROFILE_VELOCITY,
+      (uint8_t)45,
+      &dxl_error
+    );
+    if (dxl_comm_result != COMM_SUCCESS) {
+      RCLCPP_ERROR(rclcpp::get_logger("read_write_node"), "Failed to set velocity profile.");
+    } else {
+      RCLCPP_INFO(rclcpp::get_logger("read_write_node"), "Succeeded to set velocity profile.");
+    }
+
   }
 }
 
