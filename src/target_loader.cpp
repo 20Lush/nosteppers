@@ -78,7 +78,7 @@ void TargetLoader::loadOperations() {
 
 }
  
-#define BLOCK_HEIGHT 0.05
+
 void TargetLoader::execute(std::vector<Operation> ops, int ops_idx, bool return_to_neutral = false){
 
     //path logic
@@ -94,7 +94,7 @@ void TargetLoader::execute(std::vector<Operation> ops, int ops_idx, bool return_
     rclcpp::sleep_for(PATH_MAJOR_DELAY);
 
     //lower to manipulation height
-    publishTarget({ ops.at(ops_idx).pick.x, ops.at(ops_idx).pick.y, BLOCK_HEIGHT, ops.at(ops_idx).pick.theta});
+    publishTarget({ ops.at(ops_idx).pick.x, ops.at(ops_idx).pick.y, pickHeight, ops.at(ops_idx).pick.theta});
 
     //sleep for MINOR physical response
     rclcpp::sleep_for(PATH_MINOR_DELAY);
@@ -120,7 +120,7 @@ void TargetLoader::execute(std::vector<Operation> ops, int ops_idx, bool return_
     rclcpp::sleep_for(PATH_MAJOR_DELAY);
 
     //lower to manipulation height
-    publishTarget({ ops.at(ops_idx).place.x, ops.at(ops_idx).place.y, BLOCK_HEIGHT, ops.at(ops_idx).place.theta});
+    publishTarget({ ops.at(ops_idx).place.x, ops.at(ops_idx).place.y, blockHeight, ops.at(ops_idx).place.theta});
 
     //sleep for MINOR physical response
     rclcpp::sleep_for(PATH_MINOR_DELAY);
@@ -138,11 +138,17 @@ void TargetLoader::execute(std::vector<Operation> ops, int ops_idx, bool return_
     //if return_to_neutral == true, goto neutral target
     // ---- sleep for MAJOR physical response
     if(return_to_neutral){
-        publishTarget({-0.1, 0.0, 0.7, 90});
+        publishTarget(neutral_pos);
         rclcpp::sleep_for(PATH_MAJOR_DELAY);
     }
 
     currOperation_idx++;
+
+    if(currOperation_idx % 5 == 0) {
+        RCLCPP_INFO(this->get_logger(), "layer complete, increasing block height from %f to %f", blockHeight, blockHeight + 0.015);
+        blockHeight += 0.015;
+        }
+
 }
 
 int main(int argc, char ** argv){
