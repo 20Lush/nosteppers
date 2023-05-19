@@ -51,11 +51,19 @@ ament_target_dependencies(joint_planned_path
     rclcpp
 )
 
+add_executable(target_loader src/target_loader.cpp)
+ament_target_dependencies(target_loader
+    std_msgs
+    rclcpp
+)
+
+
 install(TARGETS 
   dynamixel_sync_read_write
   dynamixel_srw_tester
   joint_server
   joint_planned_path
+  target_loader
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

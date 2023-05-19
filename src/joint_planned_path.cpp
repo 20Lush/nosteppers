@@ -1,3 +1,34 @@
+//    _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _
+// ,-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)
+// `-' `-' `-' `-' `-' `-' `-' `-' `-' `-' `-' `-' `-' `-' `-' `-'
+// 		      __      __  __  ______  __  __    
+//  (•̀ᴗ•́)و   /\ \    /\ \/\ \/\  ___\/\ \_\ \    (◍＞◡＜◍)
+// 	 ᶘ ◕ᴥ◕ᶅ	  \ \ \___\ \ \_\ \ \___  \ \  __ \  【≽ܫ≼】
+// 	(ﾟ◥益◤ﾟ)   \ \_____\ \_____\/\_____\ \_\ \_\  (ʘ言ʘ╬)
+// 	 ᕙ(⇀‸↼‶)ᕗ  \/_____/\/_____/\/_____/\/_/\/_/  (◕‿◕✿)
+//    _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _
+// ,-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)-(_)
+// `-' `-' `-' `-' `-' `-' `-' `-' `-' `-' `-' `-' `-' `-' `-' `-'
+//
+
+// USAGE :: 
+/****************
+ * 
+ * This executable is the middleware that is responsible for the ingress of individual joint
+ * controller data, the translation of that data to an agreed upon format (deg, rad, or tick),
+ * and the republication of that data to a topic being monitored by the Dynamixel SDK implementation.
+ * 
+ * This executable has no conception of the origin of the data, it will blindly serve a filtered input
+ * to the servo subroutine. It is austere and should run in the background, parallel to the Dynamixel SRW
+ * process also in this project.
+ * 
+ * TDLR: this program provides 
+ * 
+ * Topics being published to (IMMUTABLE):
+ *  j0 , j1 , j2 , j3 , j4
+ * 
+*****************/
+
 #include "joint_planned_path.hpp"
 
 using namespace std::chrono_literals;
