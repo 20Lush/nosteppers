@@ -51,42 +51,77 @@ class TargetLoader : public rclcpp::Node {
         void publishEE(int state);
 
         int currOperation_idx;
+        float blockHeight = 0.075;
+        float pickHeight = 0.065;
 
 };
 
 
-#define TRAVERSE_HEIGHT 0.15
+#define TRAVERSE_HEIGHT 0.225
+
+const Target neutral_pos = {-0.1, 0.0, 0.25, 90};
+const Target pick_pos = {-0.05, 0.225, TRAVERSE_HEIGHT, 0};
 
 //these are the hard coded operations. ideally these would be placed in a json or xml but
 //time is running out and ill just have to accept the build every iterationto adjust
-std::array<Target, 11> pick_tgts = {{
+std::array<Target, 21> pick_tgts = {{
 
-    {-0.1, 0, TRAVERSE_HEIGHT, 90},
-    {-0.1, 0.25, TRAVERSE_HEIGHT, 90},
-    {-0.1, 0.25, TRAVERSE_HEIGHT, 90},
-    {-0.1, 0.25, TRAVERSE_HEIGHT, 90},
-    {-0.1, 0.25, TRAVERSE_HEIGHT, 90},
-    {-0.1, 0.25, TRAVERSE_HEIGHT, 90},
-    {-0.1, 0.25, TRAVERSE_HEIGHT, 90},
-    {-0.1, 0.25, TRAVERSE_HEIGHT, 90},
-    {-0.1, 0.25, TRAVERSE_HEIGHT, 90},
-    {-0.1, 0.25, TRAVERSE_HEIGHT, 90},
-    {-0.1, 0.25, TRAVERSE_HEIGHT, 90}
+    neutral_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos,
+    pick_pos
+    //3:39AM day of competitiong
 
 }};
 
-std::array<Target, 11> place_tgts= {{
+std::array<Target, 21> place_tgts= {{
 
-    {-0.1, 0, TRAVERSE_HEIGHT, 90},
-    {-0.25, -0.25, TRAVERSE_HEIGHT, 90},
-    {-0.25, -0.2, TRAVERSE_HEIGHT, 90},
-    {-0.25, -0.15, TRAVERSE_HEIGHT, 90},
-    {-0.25, -0.1, TRAVERSE_HEIGHT, 90},
-    {-0.25, -0.05, TRAVERSE_HEIGHT, 90},
-    {-0.25, 0, TRAVERSE_HEIGHT, 90},
-    {-0.25, 0.05, TRAVERSE_HEIGHT, 90},
-    {-0.25, 0.1, TRAVERSE_HEIGHT, 90},
-    {-0.25, 0.15, TRAVERSE_HEIGHT, 90},
-    {-0.25, 0.2, TRAVERSE_HEIGHT, 90}
+    neutral_pos,
+    {-0.25,       -0.1,   TRAVERSE_HEIGHT, 90},
+    {-0.25,      -0.05,   TRAVERSE_HEIGHT, 90},
+    {-0.25,      0.0,   TRAVERSE_HEIGHT, 90},
+    {-0.25,      0.05,   TRAVERSE_HEIGHT, 90},
+    {-0.25,        0.1,   TRAVERSE_HEIGHT, 90},
+
+    {-0.25,       -0.1,   TRAVERSE_HEIGHT, 90},
+    {-0.25,      -0.05,   TRAVERSE_HEIGHT, 90},
+    {-0.25,      0.0,   TRAVERSE_HEIGHT, 90},
+    {-0.25,      0.05,   TRAVERSE_HEIGHT, 90},
+    {-0.25,        0.1,   TRAVERSE_HEIGHT, 90},
+
+
+    {-0.25,       -0.1,   TRAVERSE_HEIGHT, 90},
+    {-0.25,      -0.05,   TRAVERSE_HEIGHT, 90},
+    {-0.25,      0.0,   TRAVERSE_HEIGHT, 90},
+    {-0.25,      0.05,   TRAVERSE_HEIGHT, 90},
+    {-0.25,        0.1,   TRAVERSE_HEIGHT, 90},
+
+
+    {-0.25,       -0.1,   TRAVERSE_HEIGHT, 90},
+    {-0.25,      -0.05,   TRAVERSE_HEIGHT, 90},
+    {-0.25,      0.0,   TRAVERSE_HEIGHT, 90},
+    {-0.25,      0.05,   TRAVERSE_HEIGHT, 90},
+    {-0.25,        0.1,   TRAVERSE_HEIGHT, 90},
+
+
+
+
 
 }};
