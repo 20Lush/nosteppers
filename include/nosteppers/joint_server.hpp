@@ -12,7 +12,7 @@
 
 //joint data from coppelia is float, need to map it to integer with minimal accuracy loss.
 //integer truncation is really bad in almost every case.
-int map(float x, float in_min, float in_max, int out_min, int out_max);
+int map(float x);
 
 class JointServer : public rclcpp::Node {
 

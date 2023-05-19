@@ -110,7 +110,7 @@ JointServer::JointServer() : Node ("joint_server") {
 
             auto filtered_joint_data = SetPosition();
             filtered_joint_data.id = JOINT_3;
-            filtered_joint_data.position = map(msg->data);
+            filtered_joint_data.position = map(msg->data + 14);
             set_position_publisher_->publish(filtered_joint_data);
         });
 
