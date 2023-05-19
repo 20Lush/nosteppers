@@ -129,12 +129,12 @@ JointServer::JointServer() : Node ("joint_server") {
     GPIO::setmode(GPIO::BOARD);
     GPIO::setup(solenoid_pin_, GPIO::OUT, GPIO::LOW);
 
-    ee_sub_ = this->create_subscription<std_msgs::msg::Bool>("ee", QOS_RKL10V,
-        [this](const std_msgs::msg::Bool::SharedPtr msg) -> void {
+    ee_sub_ = this->create_subscription<std_msgs::msg::Int32>("ee", QOS_RKL10V,
+        [this](const std_msgs::msg::Int32::SharedPtr msg) -> void {
 
             RCLCPP_INFO(this->get_logger(), "Heard from EE: %d", msg->data);
 
-            if(msg->data) openEE();
+            if(msg->data == 1) openEE();
             else closeEE();
 
         });

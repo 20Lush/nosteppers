@@ -6,7 +6,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rcutils/cmdline_parser.h"
 #include "std_msgs/msg/float32.hpp"
-#include "std_msgs/msg/bool.hpp"
+#include "std_msgs/msg/int32.hpp"
 
 #include <JetsonGPIO.h>
 
@@ -38,8 +38,8 @@ class JointServer : public rclcpp::Node {
         rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr j3_sub_;
         rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr j4_sub_;
 
-        rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr ee_sub_;
+        rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr ee_sub_;
 
-        const int solenoid_pin_ = 38;
+        const int solenoid_pin_ = 37;
 
 };
