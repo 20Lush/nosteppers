@@ -25,7 +25,9 @@ TargetLoader::TargetLoader(std::vector<Operation> ops_param) : Node ("target_loa
 
     });
 
-};
+}
+
+TargetLoader::~TargetLoader() {}
 
 void TargetLoader::publishTarget(Target tgt) {
 
@@ -46,7 +48,7 @@ void TargetLoader::publishTarget(Target tgt) {
 
 void TargetLoader::loadOperations(std::vector<Operation> ops) {
     //correlate picks to places
-    for(int i=0; i < pick_tgts.size(); i++){
+    for(uint8_t i=0; i < pick_tgts.size(); i++){
 
         ops.at(i).pick = pick_tgts.at(i);
         ops.at(i).place = place_tgts.at(i);
@@ -101,7 +103,7 @@ int main(int argc, char ** argv){
     std::vector<Operation> operations;
     auto tgt_node = std::make_shared<TargetLoader>(operations);
 
-    for(int i=0; i <= operations.size(); i++){
+    for(uint8_t i=0; i <= operations.size(); i++){
 
         tgt_node->execute(operations, i);
         rclcpp::spin_some(tgt_node); //pretty much just for logging
