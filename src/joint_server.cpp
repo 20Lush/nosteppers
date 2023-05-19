@@ -46,8 +46,10 @@
 #define DYNAMIXEL_MIN 0
 #define DYNAMIXEL_MAX 4069
 
+#define PRECISION_OFFSET -20
+
 int map(float x, float in_min, float in_max, int out_min, int out_max) {
-  return round((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min); //round(). Yikes.
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min; 
 }
 
 JointServer::JointServer() : Node ("joint_server") {
